@@ -1,72 +1,67 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional, List
 
-app = FastAPI(title="Mi Primera API")
+app = FastAPI(title="My Enhanced API - Week 2")
 
-@app.get("/")
-def hello_world():
-    return {"message": "¡Mi primera API FastAPI!"}
+# Modelos de datos
+class Product(BaseModel):
+    name: str
+    price: int
+    available: bool = True
 
-@app.get("/info")
-def info():
-    return {"api": "FastAPI", "week": 1, "status": "running"}
+class ProductResponse(BaseModel):
+    id: int
+    name: str
+    price: int
+    available: bool
+    message: str = "Successful operation"
 
-@app.get("/greeting/{name}")
-def greet_user(name: str):
-    return {"greeting": f"¡Hola {name}!"}
+class ProductListResponse(BaseModel):
+    products: List[dict]
+    total: int
+    message: str = "List retrieved"
 
-@app.get("/my-profile")
-def my_profile():
-    return {
-        "name": "Luisa Guzmán",
-        "bootcamp": "FastAPI",
-        "week": 1,
-        "date": "2025",
-        "likes_fastapi": True
-    }
+# Almacenamiento temporal
+products = []
 
-from fastapi import FastAPI
-
-app = FastAPI(title="My First API")
-
-# ANTES (Semana 1)
-@app.get("/")
-def hello_world():
-    return {"message": "My first FastAPI!"}
-
-# DESPUÉS (con type hints)
+# Endpoints básicos
 @app.get("/")
 def hello_world() -> dict:
-    return {"message": "My first FastAPI!"}
+    return {"message": "Week 2 API with Pydantic and Type Hints!"}
 
-# Si tenías endpoint con parámetro
-@app.get("/greeting/{name}")
-def greet_user(name: str) -> dict:
-    return {"greeting": f"Hello {name}!"}
+@app.get("/products", response_model=ProductListResponse)
+def get_products() -> ProductListResponse:
+    return ProductListResponse(
+        products=products,
+        total=len(products)
+    )
 
-# Endpoint con múltiples parámetros
-@app.get("/calculate/{num1}/{num2}")
-def calculate(num1: int, num2: int) -> dict:
-    result = num1 + num2
-    return {"result": result, "operation": "sum"}
+@app.post("/products", response_model=ProductResponse)
+def create_product(product: Product) -> ProductResponse:
+    product_dict = product.dict()
+    product_dict["id"] = len(products) + 1
+    products.append(product_dict)
 
+    return ProductResponse(**product_dict, message="Product created")
 
-from typing import List, Dict
+@app.get("/products/{product_id}")
+def get_product(product_id: int) -> dict:
+    for product in products:
+        if product["id"] == product_id:
+            return {"product": product}
+    raise HTTPException(status_code=404, detail="Product not found")
 
-# Lista de strings
-@app.get("/fruits")
-def get_fruits() -> List[str]:
-    return ["apple", "banana", "orange"]
+@app.get("/search")
+def search_products(
+    name: Optional[str] = None,
+    max_price: Optional[int] = None
+) -> dict:
+    results = products.copy()
 
-# Lista de números
-@app.get("/numbers")
-def get_numbers() -> List[int]:
-    return [1, 2, 3, 4, 5]
+    if name:
+        results = [p for p in results if name.lower() in p["name"].lower()]
+    if max_price:
+        results = [p for p in results if p["price"] <= max_price]
 
-# Diccionario con estructura conocida
-@app.get("/user/{user_id}")
-def get_user(user_id: int) -> Dict[str, str]:
-    return {
-        "id": str(user_id),
-        "name": "Demo User",
-        "email": "demo@example.com"
-    }
+    return {"results": results, "total": len(results)}
