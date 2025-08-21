@@ -36,6 +36,9 @@ deactivate () {
 deactivate nondestructive
 
 VIRTUAL_ENV="C:\Users\ireap\luisa-guzman\semana-1\mi-primera-fastapi\env"
+
+VIRTUAL_ENV="C:\Users\ireap\luisa-guzman\env"
+
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
