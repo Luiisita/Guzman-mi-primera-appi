@@ -7,13 +7,13 @@ app = FastAPI(title="My Enhanced API - Week 2")
 # Modelos de datos
 class Product(BaseModel):
     name: str
-    price: int
+    price: float
     available: bool = True
 
 class ProductResponse(BaseModel):
     id: int
     name: str
-    price: int
+    price: float
     available: bool
     message: str = "Successful operation"
 
