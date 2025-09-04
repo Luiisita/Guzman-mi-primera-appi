@@ -121,6 +121,67 @@ semana-1/mi-primera-fastapi/
 ```
 ---
 
+## Primer endpoint creado en / que devuelve:
+
+{ "message": "Hello World" }
+
+---
+
+## 📝 Modelo Básico
+
+Se definió la clase Task con Pydantic:
+
+id: int
+
+title: str
+
+description: Optional[str]
+
+done: bool
+
+---
+
+## 🔄 CRUD Básico
+
+Se implementaron los siguientes endpoints:
+
+POST /tasks → Crear una tarea
+
+GET /tasks → Listar todas las tareas
+
+PUT /tasks/{id} → Actualizar una tarea
+
+DELETE /tasks/{id} → Eliminar una tarea
+
+---
+
+## 🧪 Testing Manual
+
+Endpoints probados con Postman / Thunder Client / Swagger UI.
+
+
+---
+## 📖 Documentación
+
+FastAPI genera automáticamente la documentación:
+
+Swagger UI → http://127.0.0.1:8000/docs
+
+ReDoc → http://127.0.0.1:8000/redoc
+
+---
+## ▶️ Ejecución
+
+Para iniciar el servidor:
+
+uvicorn main:app --reload
+
+
+La API estará disponible en: http://127.0.0.1:8000
+
+---
+
+
 ## 📊 Auto-evaluación (1 minuto)
 
 **¿Lograste crear tu primera API?** ✅ Sí / ❌ No
