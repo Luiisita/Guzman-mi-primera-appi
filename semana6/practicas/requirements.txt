@@ -1,0 +1,9 @@
+# Dependencias existentes de semanas 1-5
+fastapi==0.104.1
+uvicorn==0.24.0
+# Agregar nuevas dependencias para testing
+pytest==7.4.3
+httpx==0.25.0
+pytest-asyncio==0.21.1
+coverage==7.3.2
+pytest-mock==3.12.0
