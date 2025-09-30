@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from main import app
+from semana6.main import app
 import pytest
 
 client = TestClient(app)

@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
 
-from main import app
+from semana6.main import app
 from database import get_db, Base
 
 # Base de datos de prueba (en memoria)
