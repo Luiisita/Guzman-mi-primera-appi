@@ -1,22 +1,20 @@
-name: CI Pipeline - Clínica Dental
+name: CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ "main" ]
   pull_request:
-    branches: [main]
+    branches: [ "main" ]
 
 jobs:
-  quality:
+  build:
     runs-on: ubuntu-latest
     strategy:
-     matrix:
-     python-version: [3.9, 3.11]
-
+      matrix:
+        python-version: [3.9, 3.11]   # 👈 quitamos 3.1
 
     steps:
-      - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -25,36 +23,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install -r requirements.txt   # 👈 ahora sí instalas dependencias
 
-      - name: Format check with Black
-        run: |
-          black --check app/ tests/
-
-      - name: Import sorting check with isort
-        run: |
-          isort --check-only app/ tests/
-
-      - name: Lint with flake8
-        run: |
-          flake8 app/ tests/
-
-      - name: Type checking with mypy
-        run: |
-          mypy app/
-
-      - name: Security check with bandit
-        run: |
-          bandit -r app/
-
-      - name: Run tests
-        run: |
-          pytest tests/ -v --cov=app --cov-report=xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: clinicadental-api
+      - name: Run Black (format)
+        run: black --check .
+      - name: Run isort (imports)
+        run: isort --check-only .
+      - name: Run Flake8 (lint)
+        run: flake8 .
+      - name: Run MyPy (type checking)
+        run: mypy .
+      - name: Run Bandit (security check)
+        run: bandit -r .
+      - name: Run tests with pytest
+        run: pytest
