@@ -1,0 +1,26 @@
+name: Deploy Clínica Dental
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        run: |
+          echo "🚀 Deploying Clínica Dental API..."
+          # Aquí pondrías el script real para subirlo a tu hosting/servidor
+          # Ejemplo: docker build + docker push + kubectl apply
+
+      - name: Health check
+        run: |
+          echo "🏥 Verificando estado de la API Clínica Dental..."
+          # curl -f https://api-clinicadental-${{ secrets.DOMAIN_SUFFIX }}/health
