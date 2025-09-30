@@ -1,50 +1,45 @@
-nombre: CI Tubería
+name: CI Pipeline
 
-pe:
+on:
   push:
-    sucursales: [ "principal" ]
+    branches: [ "main" ]
   pull_request:
-    # Cambió 'ramas' a 'sucursales' y 'mano' a 'principal'
-    sucursales: [ "principal" ]
+    branches: [ "main" ]
 
-trabajos:
-  construir:
-    # Se cambió 'ejecuciones' por 'ejecuciones'
+jobs:
+  build:
     runs-on: ubuntu-22.04
-    # Se cambió 'estrategia' por 'estrategia'
-    strategie:
-      matriz:
-        # Se cambió 'versión Python' a 'versión-python'
-        versión python: [3.9, 3.11]   
+    strategy:
+      matrix:
+        python-version: [3.9, 3.11]
 
-    # Se cambió 'pasos' por 'pasos'
-    pasos:
-      - usos: acciones/checkout@v3
-      - nombre: Configurar Pitón ${{ versión matrix.python }}
-        usos: acciones/setup-python@v4
-        # Se cambió 'cu' por 'con'
-        cu:
-          versión python: ${{ versión matrix.python }}
+    steps:
+      - uses: actions/checkout@v3
 
-      - nombre: Instalar dependencias
-        # Se cambió la 'instalación' y se eliminó el espacio adicional y el punto de acceso total en los comandos
-        fugi: |
-          python -m pip instalar -actualizar pip
-          pip install -r requisitos.txt  
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-      - nombre: Correr Negro (formato)
-        # Se eliminó el punto en el comando
-        fugi: negro --verificar .
-      - nombre: Correr isort (importaciones)
-        # Se eliminó el punto en el comando
-        fugi: isort --verificar-sólo .
-      - nombre: Correr escama8 (pelusa)
-        # Se cambió 'escama8' por 'flake8'
-        fugi: escama8
-      - nombre: Correr MiPy (tipo verificar)
-        fugi: mipy .
-      - nombre: Correr Bandido (seguridad verificar)
-        fugi: bandido -r .
-      - nombre: Correr pruebas con pytest
-        # Se cambió 'ejecutar' a 'ejecutar'
-        fugi: pytest
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Black (format)
+        run: black --check .
+
+      - name: Run isort (imports)
+        run: isort --check-only .
+
+      - name: Run Flake8 (lint)
+        run: flake8 .
+
+      - name: Run MyPy (type checking)
+        run: mypy .
+
+      - name: Run Bandit (security check)
+        run: bandit -r .
+
+      - name: Run tests with pytest
+        run: pytest
